@@ -3,35 +3,39 @@
  namespace App\Http\Controllers;
 
  use Illuminate\Http\Request;
- //use App\Models\User;
+ use App\Models\User;
  use Illuminate\Http\Response;
  use App\Traits\ApiResponser;
- use App\Services\UserService;
 
  Class UserController extends Controller {
 
     use ApiResponser;
-   /**
-     * The service to consume the User1 Microservice
-     * @var UserService
-     */
-    public $userService;
-    /**
-     * Create a new controller instance
-     * @return void
-     */
-    public function __construct(UserService $userService){
-        $this->userService = $userService;
+    private $request;
+    public function __construct(Request $request){
+        $this->request = $request;
     }
-
+    public function getUsers(){
+        $users = User::all();
+        return response()->json($users, 200);
+    }
+ /**
+     * Return the list of users
+     * @return Illuminate\Http\Response
+     */
     public function index()
     {
-        return $this->successResponse($this->userService->obtainUsers()); 
+        $users = User::all();
+        return $this->successResponse($users);
+        
     }
-
     public function add(Request $request ){
-
-        return $this->successResponse($this->userService->createUser($request->all(), Response::HTTP_CREATED));
+        $rules = [
+            'email' => 'required|max:30',
+            'password' => 'required|max:20',
+        ];
+        $this->validate($request,$rules);
+        $user = User::create($request->all());
+        return $this->successResponse($user, Response::HTTP_CREATED);
     }
     /**
      * Obtains and show one user
@@ -39,7 +43,9 @@
      */
     public function show($id)
     {
-        return $this->successResponse($this->userService->obtainUser($id));   
+         $user = User::findOrFail($id);
+         return $this->successResponse($user);
+         
     }
     /**
      * Update an existing author
@@ -47,7 +53,20 @@
      */
     public function update(Request $request,$id)
     {
-        return $this->successResponse($this->userService->editUser($request->all(), $id));
+        $rules = [
+        'email' => 'max:30',
+        'password' => 'max:20',
+        ];
+        $this->validate($request, $rules);
+        $user = User::findOrFail($id);
+            
+        $user->fill($request->all());
+        // if no changes happen
+        if ($user->isClean()) {
+            return $this->errorResponse('At least one value must change', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        $user->save();
+        return $this->successResponse($user);
     }
        /**
      * Remove an existing user
@@ -55,6 +74,9 @@
      */
     public function delete($id)
     {
-        return $this->successResponse($this->userService->deleteUser($id));
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return $this->successResponse($user);
     }
 }
