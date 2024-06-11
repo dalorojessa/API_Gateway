@@ -26,10 +26,11 @@ $router->get('/flights/auto-complete', 'FlightController@autoComplete');
 $router->get('/flights/one-way/search', 'FlightController@searchOneWayFlight');
 $router->get('/logs/recent', 'LogController@recentLogs');
 
-$router->get('/users', 'UserController@index');   
-$router->post('/users', 'UserController@add');  
-$router->get('/users/{id}', 'UserController@show'); 
-$router->put('/users/{id}', 'UserController@update'); 
-$router->delete('/users/{id}', 'UserController@delete');
+$router->get('/users',['uses' => 'UserController@getUsers']);
+$router->get('/users', 'UserController@index');   // get all users 
+$router->post('/users', 'UserController@add');  // create new user 
+$router->get('/users/{id}', 'UserController@show'); // get user by id
+$router->put('/users/{id}', 'UserController@update'); // update user 
+$router->delete('/users/{id}', 'UserController@delete'); // delete 
 
 });
