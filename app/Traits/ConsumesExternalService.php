@@ -1,10 +1,12 @@
 <?php
 
+// Define the namespace for this trait to organize code
 namespace App\Traits;
-// include the Guzzle Component Library
 
+// Import the Guzzle Component Library
 use GuzzleHttp\Client;
 
+// Define the ConsumesExternalService trait
 trait ConsumesExternalService
 {
     /** 
@@ -19,6 +21,7 @@ trait ConsumesExternalService
         'base_uri' => $this->baseUri,
     ]);
 
+    // Include authorization header if a secret key is set
     if(isset($this->secret)) {
         $headers['Authorization'] = $this->secret;
     }
@@ -29,6 +32,5 @@ trait ConsumesExternalService
     
     // return the response body contents
     return $response->getBody()->getContents();    
-        
     }
 }

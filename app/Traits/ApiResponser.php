@@ -1,9 +1,12 @@
 <?php
 
+// Define the namespace for this trait to organize code
 namespace App\Traits;
 
+// Import the Illuminate HTTP Response class
 use Illuminate\Http\Response;
 
+// Define the ApiResponser trait
 trait ApiResponser
 {
     /**
@@ -15,6 +18,7 @@ trait ApiResponser
      */
     public function successResponse($data, $code = Response::HTTP_OK)
     {
+        // Returns a response with an error message in JSON format, along with a status code
         return response()->json($data, $code)->header('Content-Type', 'application/json');
     }
 
@@ -27,6 +31,7 @@ trait ApiResponser
      */
     public function validResponse($data, $code = Response::HTTP_OK)
     {
+        // Returns a response indicating valid data in JSON format
         return response()->json(['data' => $data], $code);
     }
 
@@ -39,6 +44,7 @@ trait ApiResponser
      */
     public function errorResponse($message, $code)
     {
+        // Returns an error response in JSON format, including an error message and status code
         return response()->json(['error' => $message, 'code' => $code], $code);
     }
 
@@ -51,6 +57,7 @@ trait ApiResponser
      */
     public function errorMessage($message, $code)
     {
+        // Returns a successful response with provided data as JSON
         return response()->json(['message' => $message, 'code' => $code], $code)->header('Content-Type', 'application/json');
     }
 }
